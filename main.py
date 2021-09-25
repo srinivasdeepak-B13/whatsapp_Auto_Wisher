@@ -4,11 +4,14 @@ from collections import defaultdict
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-
-
+'''
+we use this take_input method , to take the input from the user 
+user enters 'n' -> number of messages he wants to send
+and the corresponding date,time,contact type, contact name/contact number, message he wants to send
+'''
 def take_input():
     global L
-    n = int(input("Enter number of people you want to send the message:"))
+    n = int(input("Enter number of messages you want to send : "))
     for i in range(n):
         date = input("Enter Date(YYYY-MM-DD): ")
         for j in range(1):
@@ -20,7 +23,9 @@ def take_input():
             L.append(input_message())
         events[date].append(L)
 
-
+'''
+we use this input_message method to take multiple or single lines of message input from the user
+'''
 def input_message():
     print(
         "Enter the message and use the symbol '~' to end the message:\nFor example: Hi, this is a test "
@@ -37,7 +42,9 @@ def input_message():
     message = "\n".join(message)
     return message
 
-
+'''
+we use this send_messages method to start sending msgs on a particular day
+'''
 def send_messages():
     global driver
     driver = webdriver.Edge("C:\\Users\\Public\\WebDrivers\\edgedriver_win32\\msedgedriver.exe")
@@ -59,7 +66,10 @@ def send_messages():
         else:
             print("Cannot send the message today")
 
-
+'''
+we use this calculate_sleeptime method to calculate the difference between the current time and
+the sending time of that msg, by calculating this difference we will know the sleep time
+'''
 def calculate_sleeptime(time_hour, time_min):
     if time_hour not in range(25) or time_min not in range(60):
         raise Warning("Invalid Time Format")
@@ -74,13 +84,15 @@ def calculate_sleeptime(time_hour, time_min):
     left_time = call_sec - current_to_second
     return left_time
 
-
+'''
+we use this message to send the msg to a saved contact
+'''
 def sendMessage_savedContact(target, msg):
     link = "https://web.whatsapp.com"
     driver.get(link)
     driver.implicitly_wait(30)
     ct = 0
-    while ct != 10:
+    while ct != 5:
         try:
             user = driver.find_element_by_xpath("//span[@title='{}']".format(target))
             user.click()
@@ -93,21 +105,13 @@ def sendMessage_savedContact(target, msg):
                 s -= 1
             break
         except Exception as e:
-            SCROLL_PAUSE_TIME = 0.5
-            last_height = driver.execute_script("return document.body.scrollHeight")
-            while True:
-                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-                time.sleep(SCROLL_PAUSE_TIME)
-                # Calculate new scroll height and compare with last scroll height
-                new_height = driver.execute_script("return document.body.scrollHeight")
-                if new_height == last_height:
-                    break
-                last_height = new_height
             ct += 1
-            print(ct)
             time.sleep(1)
 
-
+'''
+we use this method to send the msg to a phone number , that phone number should
+contain the country code as well
+'''
 def sendMessage_newContact(phoneNumber, msg):
     try:
         link = "https://web.whatsapp.com/send?phone={}&text&source&data&app_absent".format(phoneNumber)
@@ -123,7 +127,9 @@ def sendMessage_newContact(phoneNumber, msg):
     except Exception as e:
         print("Message not sent ", e)
 
-
+'''
+we use this method to type our text message into the whatsapp input text box
+'''
 def type_msg_in_inputbox(input_box, message):
     for ch in message:
         if ch == "\n":
@@ -135,10 +141,7 @@ def type_msg_in_inputbox(input_box, message):
     time.sleep(1)
 
 
-# events['2021-09-15'].append([17,31,'Contact','Rohit 2',"Many many happy returns of the day tyson"])
-# events['2021-09-15'].append([17,32,'New','+918978463519','Happy birthday ra jithu'])
-# events['2021-09-15'].append([17,33,'Contact','40 prablam salvar','Hi prnds'])
-# events['2021-09-15'].append([17,34,'Contact','Harsha GITAM','Hi hers a ninja '])
+
 events = defaultdict(list)
 date_today = str(datetime.date.today())
 print(date_today)
