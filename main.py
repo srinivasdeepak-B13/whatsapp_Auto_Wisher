@@ -19,7 +19,10 @@ def take_input():
             L.append(int(input("Enter Hour in 24 hour format :")))
             L.append(int(input("Enter Minute:")))
             L.append(input("Enter Contact Type Saved/New :"))
-            L.append((input("Enter Contact Number with + and country code :")))
+            if L[-1]=='Saved':
+                L.append(input("Enter contact name : "))
+            else:
+                L.append(input("Enter contact number with + and country code : "))
             L.append(input_message())
         events[date].append(L)
 
@@ -141,7 +144,8 @@ def type_msg_in_inputbox(input_box, message):
     time.sleep(1)
 
 
-
+    
+    
 events = defaultdict(list)
 date_today = str(datetime.date.today())
 print(date_today)
